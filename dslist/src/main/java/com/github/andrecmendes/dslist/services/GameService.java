@@ -1,10 +1,13 @@
 package com.github.andrecmendes.dslist.services;
 
+import com.github.andrecmendes.dslist.dto.GameDTO;
 import com.github.andrecmendes.dslist.dto.GameMinDTO;
 import com.github.andrecmendes.dslist.entities.Game;
 import com.github.andrecmendes.dslist.repositories.GameRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,7 +17,12 @@ public class GameService {
     @Autowired
     private GameRepository gameRepository;
 
-
+    @Transactional(readOnly=true)
+    public GameDTO findById(Long id){
+        Game game = gameRepository.findById(id).get();
+        GameDTO gameDTO =  new GameDTO(game);
+        return gameDTO;
+    }
     public List<GameMinDTO> findAll(){
         List<Game> games = gameRepository.findAll();
         List<GameMinDTO> gamesDTO = games.stream().map(x -> new GameMinDTO(x)).toList();
